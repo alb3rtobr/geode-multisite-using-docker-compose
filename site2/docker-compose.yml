@@ -1,0 +1,34 @@
+version: '3'
+services:
+  locator_2:
+    image: alb3rtobr/mygeode:latest
+    hostname: locator
+    networks:
+      geode-docker-compose:
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startLocator.sh 
+
+  server1_2:
+    image: alb3rtobr/mygeode:latest
+    depends_on:
+      - "locator_2"
+    networks:
+      geode-docker-compose:
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startServer.sh --name=server1 --J=-DPORT=40406
+
+  server2_2:
+    image: alb3rtobr/mygeode:latest
+    depends_on:
+      - "locator_2"
+    networks:
+      geode-docker-compose:
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startServer.sh --name=server2 --J=-DPORT=40407
+
+networks:
+  geode-docker-compose:
+

@@ -1,0 +1,63 @@
+version: '3'
+services:
+  locator_1:
+    image: alb3rtobr/mygeode:latest
+    hostname: locator
+#    mem_limit: 512m
+#    expose:
+#     - "10334"
+#     - "1099"
+#     - "7575"
+#    ports:
+#     - "1099:1099"
+#     - "10334:10334"
+#     - "7575:7575"
+     #- "7070:7070" #http-service-port
+    networks:
+      geode-docker-compose:
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startLocator.sh
+
+  server1_1:
+    image: alb3rtobr/mygeode:latest
+#    mem_limit: 2g
+#    links:
+#     - locator_1:locator_1
+#    expose:
+#     - "8080"
+#     - "40404"
+#     - "1099"
+#    ports:
+#     - "40404"
+#     - "1099:1099"
+    depends_on:
+      - "locator_1"
+    networks:
+      geode-docker-compose:     
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startServer.sh --name=server1 --J=-DPORT=40404  
+
+  server2_1:
+    image: alb3rtobr/mygeode:latest
+#    mem_limit: 2g
+#    links:
+#     - locator_1:locator_1
+#    expose:
+#     - "8080"
+#     - "40405"
+#     - "1099"
+#    ports:
+#     - "40405"
+#     - "1099:1099"
+    depends_on:
+      - "locator_1"
+    networks:
+      geode-docker-compose:   
+    volumes:
+     - ./scripts/:/scripts/
+    command: /scripts/startServer.sh --name=server2 --J=-DPORT=40405 
+
+networks:
+  geode-docker-compose:
